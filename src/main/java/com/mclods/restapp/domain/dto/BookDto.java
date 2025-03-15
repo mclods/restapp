@@ -1,20 +1,18 @@
 package com.mclods.restapp.domain.dto;
 
-import com.mclods.restapp.domain.entities.AuthorEntity;
-
 public class BookDto {
     private String isbn;
 
     private String title;
 
-    private AuthorEntity authorEntity;
+    private AuthorDto authorDto;
 
     public BookDto() {  }
 
-    public BookDto(String isbn, String title, AuthorEntity authorEntity) {
+    public BookDto(String isbn, String title, AuthorDto authorDto) {
         this.isbn = isbn;
         this.title = title;
-        this.authorEntity = authorEntity;
+        this.authorDto = authorDto;
     }
 
     public String getIsbn() {
@@ -25,8 +23,8 @@ public class BookDto {
         return title;
     }
 
-    public AuthorEntity getAuthor() {
-        return authorEntity;
+    public AuthorDto getAuthor() {
+        return authorDto;
     }
 
     public void setIsbn(String isbn) {
@@ -37,8 +35,8 @@ public class BookDto {
         this.title = title;
     }
 
-    public void setAuthor(AuthorEntity authorEntity) {
-        this.authorEntity = authorEntity;
+    public void setAuthor(AuthorDto authorDto) {
+        this.authorDto = authorDto;
     }
 
     public static BookDtoBuilder builder() {
@@ -47,7 +45,7 @@ public class BookDto {
 
     public static class BookDtoBuilder {
         private String isbn, title;
-        private AuthorEntity authorEntity;
+        private AuthorDto authorDto;
 
         public BookDtoBuilder isbn(String isbn) {
             this.isbn = isbn;
@@ -59,13 +57,13 @@ public class BookDto {
             return this;
         }
 
-        public BookDtoBuilder author(AuthorEntity authorEntity) {
-            this.authorEntity = authorEntity;
+        public BookDtoBuilder author(AuthorDto authorDto) {
+            this.authorDto = authorDto;
             return this;
         }
 
         public BookDto build() {
-            return new BookDto(isbn, title, authorEntity);
+            return new BookDto(isbn, title, authorDto);
         }
     }
 
@@ -81,11 +79,11 @@ public class BookDto {
 
         return isbn.equals(bookDtoObj.getIsbn()) &&
                 title.equals(bookDtoObj.getTitle()) &&
-                authorEntity.equals(bookDtoObj.getAuthor());
+                authorDto.equals(bookDtoObj.getAuthor());
     }
 
     @Override
     public String toString() {
-        return String.format("BookDto(isbn = %s, title = %s, author = %s)", isbn, title, authorEntity);
+        return String.format("BookDto(isbn = %s, title = %s, author = %s)", isbn, title, authorDto);
     }
 }

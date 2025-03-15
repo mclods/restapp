@@ -1,11 +1,21 @@
 package com.mclods.restapp;
 
+import com.mclods.restapp.domain.dto.AuthorDto;
+import com.mclods.restapp.domain.dto.BookDto;
 import com.mclods.restapp.domain.entities.AuthorEntity;
 import com.mclods.restapp.domain.entities.BookEntity;
 
 public class TestDataUtils {
     public static AuthorEntity testAuthorA() {
         return AuthorEntity.builder()
+                .age((short)44)
+                .name("Dennis Levi")
+                .build();
+    }
+
+    public static AuthorDto testAuthorDtoA() {
+        return AuthorDto.builder()
+                .id(1)
                 .age((short)44)
                 .name("Dennis Levi")
                 .build();
@@ -30,6 +40,14 @@ public class TestDataUtils {
                 .isbn("978-1-2345-6789-0")
                 .title("Dark Soul")
                 .author(authorEntity)
+                .build();
+    }
+
+    public static BookDto testBookDtoA(AuthorDto authorDto) {
+        return BookDto.builder()
+                .isbn("978-1-2345-6789-0")
+                .title("Dark Soul")
+                .author(authorDto)
                 .build();
     }
 
