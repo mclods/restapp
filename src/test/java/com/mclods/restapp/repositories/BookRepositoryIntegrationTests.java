@@ -1,8 +1,8 @@
 package com.mclods.restapp.repositories;
 
 import com.mclods.restapp.TestDataUtils;
-import com.mclods.restapp.domain.Author;
-import com.mclods.restapp.domain.Book;
+import com.mclods.restapp.domain.entities.AuthorEntity;
+import com.mclods.restapp.domain.entities.BookEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +27,16 @@ public class BookRepositoryIntegrationTests {
     @Test
     @DisplayName("Test book can be created and recalled")
     void testBookCanBeCreatedAndRecalled() {
-        Author author = TestDataUtils.testAuthorA();
-        Book book = TestDataUtils.testBookA(author);
+        AuthorEntity authorEntity = TestDataUtils.testAuthorA();
+        BookEntity bookEntity = TestDataUtils.testBookA(authorEntity);
 
-        bookRepository.save(book);
-        Optional<Book> result = bookRepository.findById(book.getIsbn());
+        bookRepository.save(bookEntity);
+        Optional<BookEntity> result = bookRepository.findById(bookEntity.getIsbn());
         assertThat(result).isPresent();
         assertThat(result.get())
                 .extracting(
-                        Book::getIsbn,
-                        Book::getTitle,
+                        BookEntity::getIsbn,
+                        BookEntity::getTitle,
                         (n) -> n.getAuthor().getName(),
                         (n) -> n.getAuthor().getAge()
                 ).containsExactly(
@@ -50,24 +50,24 @@ public class BookRepositoryIntegrationTests {
     @Test
     @DisplayName("Test multiple books can be created and recalled")
     void testMultipleBookCanBeCreatedAndRecalled() {
-        Author authorA = TestDataUtils.testAuthorA();
-        Author authorB = TestDataUtils.testAuthorB();
-        Author authorC = TestDataUtils.testAuthorC();
+        AuthorEntity authorEntityA = TestDataUtils.testAuthorA();
+        AuthorEntity authorEntityB = TestDataUtils.testAuthorB();
+        AuthorEntity authorEntityC = TestDataUtils.testAuthorC();
 
-        Book bookA = TestDataUtils.testBookA(authorA);
-        Book bookB = TestDataUtils.testBookB(authorB);
-        Book bookC = TestDataUtils.testBookC(authorC);
+        BookEntity bookEntityA = TestDataUtils.testBookA(authorEntityA);
+        BookEntity bookEntityB = TestDataUtils.testBookB(authorEntityB);
+        BookEntity bookEntityC = TestDataUtils.testBookC(authorEntityC);
 
-        bookRepository.save(bookA);
-        bookRepository.save(bookB);
-        bookRepository.save(bookC);
+        bookRepository.save(bookEntityA);
+        bookRepository.save(bookEntityB);
+        bookRepository.save(bookEntityC);
 
-        Iterable<Book> results = bookRepository.findAll();
+        Iterable<BookEntity> results = bookRepository.findAll();
         assertThat(results).hasSize(3);
         assertThat(results)
                 .extracting(
-                        Book::getIsbn,
-                        Book::getTitle,
+                        BookEntity::getIsbn,
+                        BookEntity::getTitle,
                         (n) -> n.getAuthor().getName(),
                         (n) -> n.getAuthor().getAge()
                 ).containsExactly(
@@ -95,18 +95,18 @@ public class BookRepositoryIntegrationTests {
     @Test
     @DisplayName("Test book can be updated")
     void testBookCanBeUpdated() {
-        Author author = TestDataUtils.testAuthorA();
-        Book book = TestDataUtils.testBookA(author);
-        bookRepository.save(book);
+        AuthorEntity authorEntity = TestDataUtils.testAuthorA();
+        BookEntity bookEntity = TestDataUtils.testBookA(authorEntity);
+        bookRepository.save(bookEntity);
 
-        book.setTitle("Goblin's Fire");
-        bookRepository.save(book);
+        bookEntity.setTitle("Goblin's Fire");
+        bookRepository.save(bookEntity);
 
-        Optional<Book> result = bookRepository.findById(book.getIsbn());
+        Optional<BookEntity> result = bookRepository.findById(bookEntity.getIsbn());
         assertThat(result).isPresent();
         assertThat(result.get()).extracting(
-                Book::getIsbn,
-                Book::getTitle,
+                BookEntity::getIsbn,
+                BookEntity::getTitle,
                 (n) -> n.getAuthor().getName(),
                 (n) -> n.getAuthor().getAge()
         ).containsExactly(
@@ -120,12 +120,12 @@ public class BookRepositoryIntegrationTests {
     @Test
     @DisplayName("Test book can be deleted")
     void testBookCanBeDeleted() {
-        Author author = TestDataUtils.testAuthorA();
-        Book book = TestDataUtils.testBookA(author);
-        bookRepository.save(book);
+        AuthorEntity authorEntity = TestDataUtils.testAuthorA();
+        BookEntity bookEntity = TestDataUtils.testBookA(authorEntity);
+        bookRepository.save(bookEntity);
 
-        bookRepository.delete(book);
-        Optional<Book> result = bookRepository.findById(book.getIsbn());
+        bookRepository.delete(bookEntity);
+        Optional<BookEntity> result = bookRepository.findById(bookEntity.getIsbn());
         assertThat(result).isEmpty();
     }
 

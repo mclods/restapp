@@ -1,51 +1,51 @@
 package com.mclods.restapp;
 
-import com.mclods.restapp.domain.Author;
-import com.mclods.restapp.domain.Book;
+import com.mclods.restapp.domain.entities.AuthorEntity;
+import com.mclods.restapp.domain.entities.BookEntity;
 
 public class TestDataUtils {
-    public static Author testAuthorA() {
-        return Author.builder()
+    public static AuthorEntity testAuthorA() {
+        return AuthorEntity.builder()
                 .age((short)44)
                 .name("Dennis Levi")
                 .build();
     }
 
-    public static Author testAuthorB() {
-        return Author.builder()
+    public static AuthorEntity testAuthorB() {
+        return AuthorEntity.builder()
                 .name("Bob Dylan")
                 .age((short)45)
                 .build();
     }
 
-    public static Author testAuthorC() {
-        return Author.builder()
+    public static AuthorEntity testAuthorC() {
+        return AuthorEntity.builder()
                 .name("Jeremy Reiner")
                 .age((short)56)
                 .build();
     }
 
-    public static Book testBookA(Author author) {
-        return Book.builder()
+    public static BookEntity testBookA(AuthorEntity authorEntity) {
+        return BookEntity.builder()
                 .isbn("978-1-2345-6789-0")
                 .title("Dark Soul")
-                .author(author)
+                .author(authorEntity)
                 .build();
     }
 
-    public static Book testBookB(Author author) {
-        return Book.builder()
+    public static BookEntity testBookB(AuthorEntity authorEntity) {
+        return BookEntity.builder()
                 .isbn("978-9-2022-6589-9")
                 .title("The Whispering Shadows")
-                .author(author)
+                .author(authorEntity)
                 .build();
     }
 
-    public static Book testBookC(Author author) {
-        return Book.builder()
+    public static BookEntity testBookC(AuthorEntity authorEntity) {
+        return BookEntity.builder()
                 .isbn("978-3-3921-5711-8")
                 .title("Echoes of the Forgotten Realm")
-                .author(author)
+                .author(authorEntity)
                 .build();
     }
 }
