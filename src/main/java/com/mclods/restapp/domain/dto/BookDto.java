@@ -1,7 +1,6 @@
 package com.mclods.restapp.domain.dto;
 
 import com.mclods.restapp.domain.entities.AuthorEntity;
-import com.mclods.restapp.domain.entities.BookEntity;
 
 public class BookDto {
     private String isbn;
