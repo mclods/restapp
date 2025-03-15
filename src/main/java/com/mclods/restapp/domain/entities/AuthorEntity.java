@@ -1,22 +1,22 @@
-package com.mclods.restapp.domain;
+package com.mclods.restapp.domain.entities;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "author")
-public class Author {
+public class AuthorEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Short age;
 
     private String name;
 
-    public Author() {  }
+    public AuthorEntity() {  }
 
-    public Author(String name, Short age) {
+    public AuthorEntity(String name, Short age) {
         this.name = name;
         this.age = age;
     }
@@ -41,26 +41,26 @@ public class Author {
         this.name = name;
     }
 
-    public static AuthorBuilder builder() {
-        return new AuthorBuilder();
+    public static AuthorEntityBuilder builder() {
+        return new AuthorEntityBuilder();
     }
 
-    public static class AuthorBuilder {
+    public static class AuthorEntityBuilder {
         private Short age;
         private String name;
 
-        public AuthorBuilder age(Short age) {
+        public AuthorEntityBuilder age(Short age) {
             this.age = age;
             return this;
         }
 
-        public AuthorBuilder name(String name) {
+        public AuthorEntityBuilder name(String name) {
             this.name = name;
             return this;
         }
 
-        public Author build() {
-            return new Author(name, age);
+        public AuthorEntity build() {
+            return new AuthorEntity(name, age);
         }
     }
 
@@ -70,13 +70,13 @@ public class Author {
             return true;
         }
 
-        if(!(obj instanceof Author authorObj)) {
+        if(!(obj instanceof AuthorEntity authorEntityObj)) {
             return false;
         }
 
-        return id.equals(authorObj.getId()) &&
-                age.equals(authorObj.getAge()) &&
-                name.equals(authorObj.getName());
+        return id.equals(authorEntityObj.getId()) &&
+                age.equals(authorEntityObj.getAge()) &&
+                name.equals(authorEntityObj.getName());
     }
 
     @Override
