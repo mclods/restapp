@@ -3,6 +3,8 @@ package com.mclods.restapp.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mclods.restapp.TestDataUtils;
 import com.mclods.restapp.domain.dto.AuthorDto;
+import com.mclods.restapp.domain.entities.AuthorEntity;
+import com.mclods.restapp.repositories.AuthorRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,13 @@ public class AuthorControllerIntegrationTests {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
+    private final AuthorRepository authorRepository;
 
     @Autowired
-    public AuthorControllerIntegrationTests(MockMvc mockMvc) {
+    public AuthorControllerIntegrationTests(MockMvc mockMvc, AuthorRepository authorRepository) {
         this.mockMvc = mockMvc;
         this.objectMapper = new ObjectMapper();
+        this.authorRepository = authorRepository;
     }
 
     @Test
@@ -61,6 +65,43 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.name").value("Dennis Levi")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(44)
+        );
+    }
+
+    @Test
+    @DisplayName("Test find all authors succeeds with status code 200")
+    void testFindAllAuthorsSucceedsWithStatusCode200() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test find all authors succeed and returns all authors")
+    void testFindAllAuthorsSucceedsAndReturnsAllAuthors() throws Exception {
+        AuthorEntity authorEntityA = TestDataUtils.testAuthorA();
+        AuthorEntity authorEntityB = TestDataUtils.testAuthorB();
+        authorRepository.save(authorEntityA);
+        authorRepository.save(authorEntityB);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].name").value("Dennis Levi")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].age").value(44)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[1].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[1].name").value("Bob Dylan")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[1].age").value(45)
         );
     }
 }
