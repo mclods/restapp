@@ -6,13 +6,11 @@ import com.mclods.restapp.mappers.Mapper;
 import com.mclods.restapp.services.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class AuthorController {
@@ -28,7 +26,7 @@ public class AuthorController {
     @PostMapping(path = "/authors")
     ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
-        AuthorEntity savedAuthorEntity = authorService.createAuthor(authorEntity);
+        AuthorEntity savedAuthorEntity = authorService.create(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.CREATED);
     }
 
@@ -37,5 +35,14 @@ public class AuthorController {
         List<AuthorDto> authors = new ArrayList<>();
         authorService.findAll().forEach((n) -> authors.add(authorMapper.mapTo(n)));
         return authors;
+    }
+
+    @GetMapping(path = "/authors/{id}")
+    ResponseEntity<AuthorDto> findAuthor(@PathVariable Integer id) {
+        Optional<AuthorEntity> author = authorService.findOne(id);
+        return author.map((authorEntity) -> {
+            AuthorDto authorDto = authorMapper.mapTo(authorEntity);
+            return new ResponseEntity<>(authorDto, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
