@@ -95,4 +95,45 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$[1].title").value("The Whispering Shadows")
         );
     }
+
+    @Test
+    @DisplayName("Test find one book succeeds with status code 200 Ok")
+    void testFindOneBookSucceedsWithStatusCode200Ok() throws Exception {
+        BookEntity bookEntity = TestDataUtils.testBookA(null);
+        bookRepository.save(bookEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/978-1-2345-6789-0")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test find one book fails with status code 404 Not Found")
+    void testFindOneBookFailsWithStatusCode404NotFound() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    @DisplayName("Test find one book succeeds and returns the book")
+    void testFindOneBookSucceedsAndReturnsTheBook() throws Exception {
+        BookEntity bookEntity = TestDataUtils.testBookA(null);
+        bookRepository.save(bookEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/978-1-2345-6789-0")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.isbn").value("978-1-2345-6789-0")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("Dark Soul")
+        );
+    }
 }

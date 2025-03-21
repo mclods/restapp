@@ -34,4 +34,12 @@ public class BookController {
         bookService.findAll().forEach((bookEntity) -> books.add(bookMapper.mapTo(bookEntity)));
         return books;
     }
+
+    @GetMapping(path = "/books/{isbn}")
+    ResponseEntity<BookDto> findBook(@PathVariable("isbn") String isbn) {
+        return bookService.findOne(isbn).map((bookEntity) -> {
+            BookDto bookDto = bookMapper.mapTo(bookEntity);
+            return new ResponseEntity<>(bookDto, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
