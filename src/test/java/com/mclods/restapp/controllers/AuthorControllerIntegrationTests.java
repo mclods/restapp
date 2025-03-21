@@ -131,4 +131,24 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.status().isNotFound()
         );
     }
+
+    @Test
+    @DisplayName("Test find one author succeeds and returns the author")
+    void testFindOneAuthorSucceedsAndReturnsTheAuthor() throws Exception {
+        AuthorEntity authorEntity = TestDataUtils.testAuthorA();
+        authorRepository.save(authorEntity);
+
+        Integer authorId = authorEntity.getId();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(String.format("/authors/%d", authorId))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value("Dennis Levi")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(44)
+        );
+    }
 }
