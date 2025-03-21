@@ -16,13 +16,18 @@ public class AuthorEntity {
 
     public AuthorEntity() {  }
 
-    public AuthorEntity(String name, Short age) {
+    public AuthorEntity(Integer id, String name, Short age) {
+        this.id = id;
         this.name = name;
         this.age = age;
     }
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Short getAge() {
@@ -46,8 +51,14 @@ public class AuthorEntity {
     }
 
     public static class AuthorEntityBuilder {
+        private Integer id;
         private Short age;
         private String name;
+
+        public AuthorEntityBuilder id(Integer id) {
+            this.id = id;
+            return this;
+        }
 
         public AuthorEntityBuilder age(Short age) {
             this.age = age;
@@ -60,7 +71,7 @@ public class AuthorEntity {
         }
 
         public AuthorEntity build() {
-            return new AuthorEntity(name, age);
+            return new AuthorEntity(id, name, age);
         }
     }
 

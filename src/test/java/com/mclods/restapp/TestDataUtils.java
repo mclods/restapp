@@ -28,6 +28,14 @@ public class TestDataUtils {
                 .build();
     }
 
+    public static AuthorDto testAuthorDtoB() {
+        return AuthorDto.builder()
+                .id(2)
+                .name("Bob Dylan")
+                .age((short)45)
+                .build();
+    }
+
     public static AuthorEntity testAuthorC() {
         return AuthorEntity.builder()
                 .name("Jeremy Reiner")
