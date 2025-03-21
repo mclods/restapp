@@ -9,4 +9,5 @@ public interface BookService {
     BookEntity save(String isbn, BookEntity bookEntity);
     List<BookEntity> findAll();
     Optional<BookEntity> findOne(String isbn);
+    boolean exists(String isbn);
 }

@@ -136,4 +136,42 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.title").value("Dark Soul")
         );
     }
+
+    @Test
+    @DisplayName("Test full update book succeeds with status code 200")
+    void testFullUpdateBookSucceedsWithStatusCode200() throws Exception {
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
+
+        BookDto bookDto = TestDataUtils.testBookDtoB(null);
+        String bookJson = objectMapper.writeValueAsString(bookDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/books/%s", savedBook.getIsbn()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update book succeeds and returns the updated book")
+    void testFullUpdateBookSucceedsAndReturnsTheUpdatedBook() throws Exception {
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
+
+        BookDto bookDto = TestDataUtils.testBookDtoB(null);
+        String bookJson = objectMapper.writeValueAsString(bookDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/books/%s", savedBook.getIsbn()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.isbn").value("978-1-2345-6789-0")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("The Whispering Shadows")
+        );
+    }
 }
