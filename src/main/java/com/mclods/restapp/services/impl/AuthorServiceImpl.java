@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -17,7 +18,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorEntity createAuthor(AuthorEntity authorEntity) {
+    public AuthorEntity create(AuthorEntity authorEntity) {
         return authorRepository.save(authorEntity);
     }
 
@@ -26,5 +27,10 @@ public class AuthorServiceImpl implements AuthorService {
         List<AuthorEntity> authors = new ArrayList<>();
         authorRepository.findAll().forEach(authors::add);
         return authors;
+    }
+
+    @Override
+    public Optional<AuthorEntity> findOne(Integer id) {
+        return authorRepository.findById(id);
     }
 }

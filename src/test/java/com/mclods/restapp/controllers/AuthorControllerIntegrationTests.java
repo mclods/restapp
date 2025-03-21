@@ -104,4 +104,31 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$[1].age").value(45)
         );
     }
+
+    @Test
+    @DisplayName("Test find one author succeeds with status code 200 Ok")
+    void testFindOneAuthorSucceedsWithStatusCode200Ok() throws Exception {
+        AuthorEntity authorEntity = TestDataUtils.testAuthorA();
+        authorRepository.save(authorEntity);
+
+        Integer authorId = authorEntity.getId();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(String.format("/authors/%d", authorId))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test find one author fails with status code 404 Not Found")
+    void testFindOneAuthorSucceedsWithStatusCode404NotFound() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
 }
