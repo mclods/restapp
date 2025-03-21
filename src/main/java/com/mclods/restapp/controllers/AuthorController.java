@@ -33,7 +33,7 @@ public class AuthorController {
     @GetMapping(path = "/authors")
     List<AuthorDto> findAllAuthors() {
         List<AuthorDto> authors = new ArrayList<>();
-        authorService.findAll().forEach((n) -> authors.add(authorMapper.mapTo(n)));
+        authorService.findAll().forEach((authorEntity) -> authors.add(authorMapper.mapTo(authorEntity)));
         return authors;
     }
 
