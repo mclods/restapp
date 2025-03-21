@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 public class BookController {
     private final BookService bookService;
@@ -26,12 +23,5 @@ public class BookController {
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
         BookEntity savedBookEntity = bookService.create(isbn, bookEntity);
         return new ResponseEntity<>(bookMapper.mapTo(savedBookEntity), HttpStatus.CREATED);
-    }
-
-    @GetMapping(path = "/books")
-    List<BookDto> findAllBooks() {
-        List<BookDto> books = new ArrayList<>();
-        bookService.findAll().forEach((n) -> books.add(bookMapper.mapTo(n)));
-        return books;
     }
 }
