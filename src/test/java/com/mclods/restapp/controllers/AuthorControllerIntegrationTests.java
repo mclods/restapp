@@ -154,8 +154,7 @@ public class AuthorControllerIntegrationTests {
         AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
         authorRepository.save(savedAuthor);
 
-        AuthorDto authorDto = TestDataUtils.testAuthorDtoA();
-        authorDto.setName("Maria Djokovic");
+        AuthorDto authorDto = TestDataUtils.testAuthorDtoB();
         String authorJson = objectMapper.writeValueAsString(authorDto);
 
         mockMvc.perform(
@@ -171,7 +170,6 @@ public class AuthorControllerIntegrationTests {
     @DisplayName("Test full update author fails with status code 404 Not Found")
     void testFullUpdateAuthorFailsWithStatusCode404NotFound() throws Exception {
         AuthorDto authorDto = TestDataUtils.testAuthorDtoA();
-        authorDto.setName("Maria Djokovic");
         String authorJson = objectMapper.writeValueAsString(authorDto);
 
         mockMvc.perform(
@@ -190,7 +188,6 @@ public class AuthorControllerIntegrationTests {
         authorRepository.save(savedAuthor);
 
         AuthorDto authorDto = TestDataUtils.testAuthorDtoB();
-        authorDto.setId(savedAuthor.getId());
         String authorJson = objectMapper.writeValueAsString(authorDto);
 
         mockMvc.perform(

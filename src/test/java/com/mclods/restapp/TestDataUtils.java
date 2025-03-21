@@ -67,6 +67,14 @@ public class TestDataUtils {
                 .build();
     }
 
+    public static BookDto testBookDtoB(AuthorDto authorDto) {
+        return BookDto.builder()
+                .isbn("978-9-2022-6589-9")
+                .title("The Whispering Shadows")
+                .author(authorDto)
+                .build();
+    }
+
     public static BookEntity testBookC(AuthorEntity authorEntity) {
         return BookEntity.builder()
                 .isbn("978-3-3921-5711-8")
