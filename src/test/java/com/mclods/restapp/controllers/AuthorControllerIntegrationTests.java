@@ -108,13 +108,11 @@ public class AuthorControllerIntegrationTests {
     @Test
     @DisplayName("Test find one author succeeds with status code 200 Ok")
     void testFindOneAuthorSucceedsWithStatusCode200Ok() throws Exception {
-        AuthorEntity authorEntity = TestDataUtils.testAuthorA();
-        authorRepository.save(authorEntity);
-
-        Integer authorId = authorEntity.getId();
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get(String.format("/authors/%d", authorId))
+                MockMvcRequestBuilders.get(String.format("/authors/%d", savedAuthor.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.status().isOk()
@@ -135,13 +133,11 @@ public class AuthorControllerIntegrationTests {
     @Test
     @DisplayName("Test find one author succeeds and returns the author")
     void testFindOneAuthorSucceedsAndReturnsTheAuthor() throws Exception {
-        AuthorEntity authorEntity = TestDataUtils.testAuthorA();
-        authorRepository.save(authorEntity);
-
-        Integer authorId = authorEntity.getId();
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get(String.format("/authors/%d", authorId))
+                MockMvcRequestBuilders.get(String.format("/authors/%d", savedAuthor.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.id").isNumber()
@@ -149,6 +145,64 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.name").value("Dennis Levi")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(44)
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update author succeeds with status code 200 Ok")
+    void testFullUpdateAuthorSucceedsWithStatusCode200Ok() throws Exception {
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
+
+        AuthorDto authorDto = TestDataUtils.testAuthorDtoA();
+        authorDto.setName("Maria Djokovic");
+        String authorJson = objectMapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/authors/%d", savedAuthor.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update author fails with status code 404 Not Found")
+    void testFullUpdateAuthorFailsWithStatusCode404NotFound() throws Exception {
+        AuthorDto authorDto = TestDataUtils.testAuthorDtoA();
+        authorDto.setName("Maria Djokovic");
+        String authorJson = objectMapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/authors/%d", authorDto.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update author succeeds and returns the updated author")
+    void testFullUpdateAuthorSucceedsAndReturnsTheUpdatedAuthor() throws Exception {
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
+
+        AuthorDto authorDto = TestDataUtils.testAuthorDtoB();
+        authorDto.setId(savedAuthor.getId());
+        String authorJson = objectMapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/authors/%d", savedAuthor.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(savedAuthor.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value("Bob Dylan")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(45)
         );
     }
 }

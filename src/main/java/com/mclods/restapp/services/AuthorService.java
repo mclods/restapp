@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorService {
-    AuthorEntity create(AuthorEntity authorEntity);
+    AuthorEntity save(AuthorEntity authorEntity);
+    AuthorEntity save(Integer id, AuthorEntity authorEntity);
     List<AuthorEntity> findAll();
     Optional<AuthorEntity> findOne(Integer id);
+    boolean exists(Integer id);
 }

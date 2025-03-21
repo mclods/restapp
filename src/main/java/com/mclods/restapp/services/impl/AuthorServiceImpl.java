@@ -18,7 +18,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorEntity create(AuthorEntity authorEntity) {
+    public AuthorEntity save(AuthorEntity authorEntity) {
+        return authorRepository.save(authorEntity);
+    }
+
+    @Override
+    public AuthorEntity save(Integer id, AuthorEntity authorEntity) {
+        authorEntity.setId(id);
         return authorRepository.save(authorEntity);
     }
 
@@ -32,5 +38,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Optional<AuthorEntity> findOne(Integer id) {
         return authorRepository.findById(id);
+    }
+
+    @Override
+    public boolean exists(Integer id) {
+        return authorRepository.existsById(id);
     }
 }
