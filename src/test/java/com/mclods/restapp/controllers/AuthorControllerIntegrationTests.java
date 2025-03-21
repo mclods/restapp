@@ -184,7 +184,7 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test full update author succeeds and return the updated author")
+    @DisplayName("Test full update author succeeds and returns the updated author")
     void testFullUpdateAuthorSucceedsAndReturnsTheUpdatedAuthor() throws Exception {
         AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
         authorRepository.save(savedAuthor);
