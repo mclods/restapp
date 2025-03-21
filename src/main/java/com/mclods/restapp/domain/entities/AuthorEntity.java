@@ -3,7 +3,7 @@ package com.mclods.restapp.domain.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "author")
+@Table(name = "authors")
 public class AuthorEntity {
 
     @Id
