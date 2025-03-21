@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -27,5 +28,10 @@ public class BookServiceImpl implements BookService {
         List<BookEntity> books = new ArrayList<>();
         bookRepository.findAll().forEach(books::add);
         return books;
+    }
+
+    @Override
+    public Optional<BookEntity> findOne(String isbn) {
+        return bookRepository.findById(isbn);
     }
 }
