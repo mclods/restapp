@@ -49,8 +49,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test create author succeeds and returns saved author")
-    void testCreateAuthorSucceedsAndReturnsSavedAuthor() throws Exception {
+    @DisplayName("Test create author succeeds and returns the saved author")
+    void testCreateAuthorSucceedsAndReturnsTheSavedAuthor() throws Exception {
         AuthorDto authorDto = TestDataUtils.testAuthorDtoA();
         authorDto.setId(null);
         String authorJson = objectMapper.writeValueAsString(authorDto);
@@ -80,8 +80,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test find all authors succeed and returns all authors")
-    void testFindAllAuthorsSucceedsAndReturnsAllAuthors() throws Exception {
+    @DisplayName("Test find all authors succeed and returns all the authors")
+    void testFindAllAuthorsSucceedsAndReturnsAllTheAuthors() throws Exception {
         AuthorEntity authorEntityA = TestDataUtils.testAuthorA();
         AuthorEntity authorEntityB = TestDataUtils.testAuthorB();
         authorRepository.save(authorEntityA);
@@ -173,7 +173,7 @@ public class AuthorControllerIntegrationTests {
         String authorJson = objectMapper.writeValueAsString(authorDto);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put(String.format("/authors/%d", authorDto.getId()))
+                MockMvcRequestBuilders.put("/authors/999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorJson)
         ).andExpect(
@@ -200,6 +200,70 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.name").value("Bob Dylan")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(45)
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update author succeeds with status code 200 Ok")
+    void testPartialUpdateAuthorSucceedsWithStatusCode200Ok() throws Exception {
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
+
+        AuthorDto authorDto = AuthorDto.builder()
+                .id(savedAuthor.getId())
+                .name("Kumar Amit")
+                .build();
+        String authorJson = objectMapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/authors/%d", savedAuthor.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update author fails with status code 404 Not Found")
+    void testPartialUpdateAuthorFailsWithStatusCode404NotFound() throws Exception {
+        AuthorDto authorDto = AuthorDto.builder()
+                .id(999)
+                .name("Kumar Amit")
+                .build();
+        String authorJson = objectMapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/authors/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update succeeds and returns the updated author")
+    void testPartialUpdateSucceedsAndReturnsTheUpdatedAuthor() throws Exception {
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
+
+        AuthorDto authorDto = AuthorDto.builder()
+                .id(savedAuthor.getId())
+                .name("Kumar Amit")
+                .build();
+        String authorJson = objectMapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/authors/%d", savedAuthor.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(savedAuthor.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value("Kumar Amit")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(44)
         );
     }
 }
