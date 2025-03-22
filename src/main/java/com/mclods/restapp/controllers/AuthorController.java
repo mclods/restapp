@@ -4,6 +4,8 @@ import com.mclods.restapp.domain.dto.AuthorDto;
 import com.mclods.restapp.domain.entities.AuthorEntity;
 import com.mclods.restapp.mappers.Mapper;
 import com.mclods.restapp.services.AuthorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ public class AuthorController {
 
     private final AuthorService authorService;
     private final Mapper<AuthorEntity, AuthorDto> authorMapper;
+    private static final Logger logger = LoggerFactory.getLogger(AuthorController.class);
 
     public AuthorController(AuthorService authorService, Mapper<AuthorEntity, AuthorDto> authorMapper) {
         this.authorService = authorService;
@@ -25,6 +28,8 @@ public class AuthorController {
 
     @PostMapping(path = "/authors")
     ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
+        logger.info("createAuthor endpoint called");
+
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
         AuthorEntity savedAuthorEntity = authorService.save(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.CREATED);
@@ -32,6 +37,8 @@ public class AuthorController {
 
     @GetMapping(path = "/authors")
     List<AuthorDto> findAllAuthors() {
+        logger.info("findAllAuthors endpoint called");
+
         List<AuthorDto> authors = new ArrayList<>();
         authorService.findAll().forEach((foundAuthor) ->
                 authors.add(authorMapper.mapTo(foundAuthor)));
@@ -40,11 +47,18 @@ public class AuthorController {
 
     @GetMapping(path = "/authors/{id}")
     ResponseEntity<AuthorDto> findAuthor(@PathVariable("id") Integer id) {
+        logger.info("findAuthor endpoint called");
+
         Optional<AuthorEntity> author = authorService.findOne(id);
         return author.map((foundAuthor) -> {
+            logger.info("Requested author found");
+
             AuthorDto authorDto = authorMapper.mapTo(foundAuthor);
             return new ResponseEntity<>(authorDto, HttpStatus.OK);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }).orElseGet(() -> {
+            logger.info("Requested author not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        });
     }
 
     @PutMapping(path = "/authors/{id}")
@@ -52,7 +66,10 @@ public class AuthorController {
             @PathVariable("id") Integer id,
             @RequestBody AuthorDto authorDto
     ) {
+        logger.info("fullUpdateAuthor endpoint called");
+
         if(!authorService.exists(id)) {
+            logger.info("Requested author not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -65,7 +82,10 @@ public class AuthorController {
             @PathVariable("id") Integer id,
             @RequestBody AuthorDto authorDto
     ) {
+        logger.info("partialUpdateAuthor endpoint called");
+
         if(!authorService.exists(id)) {
+            logger.info("Requested author not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -75,7 +95,10 @@ public class AuthorController {
 
     @DeleteMapping(path = "/authors/{id}")
     ResponseEntity<AuthorDto> deleteAuthor(@PathVariable("id") Integer id) {
+        logger.info("deleteAuthor endpoint called");
+
         if(!authorService.exists(id)) {
+            logger.info("Requested author not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 

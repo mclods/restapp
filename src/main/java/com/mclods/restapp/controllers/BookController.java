@@ -4,6 +4,8 @@ import com.mclods.restapp.domain.dto.BookDto;
 import com.mclods.restapp.domain.entities.BookEntity;
 import com.mclods.restapp.mappers.Mapper;
 import com.mclods.restapp.services.BookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
     private final Mapper<BookEntity, BookDto> bookMapper;
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 
     public BookController(BookService bookService, Mapper<BookEntity, BookDto> bookMapper) {
         this.bookService = bookService;
@@ -23,18 +26,24 @@ public class BookController {
 
     @PutMapping(path = "/books/{isbn}")
     ResponseEntity<BookDto> createUpdateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto) {
+        logger.info("createUpdateBook endpoint called");
+
         boolean bookExists = bookService.exists(isbn);
         BookEntity savedUpdatedBook = bookService.save(isbn, bookMapper.mapFrom(bookDto));
 
         if(bookExists) {
+            logger.info("Requested book found");
             return new ResponseEntity<>(bookMapper.mapTo(savedUpdatedBook), HttpStatus.OK);
         } else {
+            logger.info("Requested book not found");
             return new ResponseEntity<>(bookMapper.mapTo(savedUpdatedBook), HttpStatus.CREATED);
         }
     }
 
     @GetMapping(path = "/books")
     List<BookDto> findAllBooks() {
+        logger.info("findAllBooks endpoint called");
+
         List<BookDto> books = new ArrayList<>();
         bookService.findAll().forEach((foundBook) ->
                 books.add(bookMapper.mapTo(foundBook)));
@@ -43,10 +52,17 @@ public class BookController {
 
     @GetMapping(path = "/books/{isbn}")
     ResponseEntity<BookDto> findBook(@PathVariable("isbn") String isbn) {
+        logger.info("findBook endpoint called");
+
         return bookService.findOne(isbn).map((foundBook) -> {
+            logger.info("Requested book found");
+
             BookDto bookDto = bookMapper.mapTo(foundBook);
             return new ResponseEntity<>(bookDto, HttpStatus.OK);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }).orElseGet(() -> {
+            logger.info("Requested book not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        });
     }
 
     @PatchMapping(path = "/books/{isbn}")
@@ -54,7 +70,10 @@ public class BookController {
             @PathVariable("isbn") String isbn,
             @RequestBody BookDto bookDto
     ) {
+      logger.info("partialUpdateBook endpoint called");
+
       if(!bookService.exists(isbn)) {
+          logger.info("Requested book not found");
           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
 
@@ -64,7 +83,10 @@ public class BookController {
 
     @DeleteMapping(path = "/books/{isbn}")
     ResponseEntity<BookDto> deleteBook(@PathVariable("isbn") String isbn) {
+        logger.info("deleteBook endpoint called");
+
         if(!bookService.exists(isbn)) {
+            logger.info("Requested book not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
