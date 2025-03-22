@@ -82,10 +82,10 @@ public class AuthorControllerIntegrationTests {
     @Test
     @DisplayName("Test find all authors succeed and returns all the authors")
     void testFindAllAuthorsSucceedsAndReturnsAllTheAuthors() throws Exception {
-        AuthorEntity authorEntityA = TestDataUtils.testAuthorA();
-        AuthorEntity authorEntityB = TestDataUtils.testAuthorB();
-        authorRepository.save(authorEntityA);
-        authorRepository.save(authorEntityB);
+        AuthorEntity savedAuthorA = TestDataUtils.testAuthorA();
+        AuthorEntity savedAuthorB = TestDataUtils.testAuthorB();
+        authorRepository.save(savedAuthorA);
+        authorRepository.save(savedAuthorB);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors")
