@@ -47,8 +47,8 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test create book succeeds and returns saved book")
-    void testCreateBookSucceedsAndReturnsSavedBook() throws Exception {
+    @DisplayName("Test create book succeeds and returns the saved book")
+    void testCreateBookSucceedsAndReturnsTheSavedBook() throws Exception {
         BookDto bookDto = TestDataUtils.testBookDtoA(null);
         String bookJson = objectMapper.writeValueAsString(bookDto);
 
@@ -75,12 +75,12 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test find all books succeeds and returns all books")
-    void testFindAllBooksSucceedsAndReturnsAllBooks() throws Exception {
-        BookEntity bookEntityA = TestDataUtils.testBookA(null);
-        BookEntity bookEntityB = TestDataUtils.testBookB(null);
-        bookRepository.save(bookEntityA);
-        bookRepository.save(bookEntityB);
+    @DisplayName("Test find all books succeeds and returns all the books")
+    void testFindAllBooksSucceedsAndReturnsAllTheBooks() throws Exception {
+        BookEntity savedBookA = TestDataUtils.testBookA(null);
+        BookEntity savedBookB = TestDataUtils.testBookB(null);
+        bookRepository.save(savedBookA);
+        bookRepository.save(savedBookB);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books")
@@ -97,13 +97,13 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test find one book succeeds with status code 200 Ok")
-    void testFindOneBookSucceedsWithStatusCode200Ok() throws Exception {
-        BookEntity bookEntity = TestDataUtils.testBookA(null);
-        bookRepository.save(bookEntity);
+    @DisplayName("Test find one book succeeds with status code 200 OK when book exists")
+    void testFindOneBookSucceedsWithStatusCode200OKWhenBookExists() throws Exception {
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/books/978-1-2345-6789-0")
+                MockMvcRequestBuilders.get(String.format("/books/%s", savedBook.getIsbn()))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
             MockMvcResultMatchers.status().isOk()
@@ -111,8 +111,8 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test find one book fails with status code 404 Not Found")
-    void testFindOneBookFailsWithStatusCode404NotFound() throws Exception {
+    @DisplayName("Test find one book fails with status code 404 Not Found when book does not exist")
+    void testFindOneBookFailsWithStatusCode404NotFoundWhenBookDoesNotExist() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books/999")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,11 +124,11 @@ public class BookControllerIntegrationTests {
     @Test
     @DisplayName("Test find one book succeeds and returns the book")
     void testFindOneBookSucceedsAndReturnsTheBook() throws Exception {
-        BookEntity bookEntity = TestDataUtils.testBookA(null);
-        bookRepository.save(bookEntity);
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/books/978-1-2345-6789-0")
+                MockMvcRequestBuilders.get(String.format("/books/%s", savedBook.getIsbn()))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.isbn").value("978-1-2345-6789-0")
@@ -138,8 +138,8 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test full update book succeeds with status code 200")
-    void testFullUpdateBookSucceedsWithStatusCode200() throws Exception {
+    @DisplayName("Test full update book succeeds with status code 200 OK when book exists")
+    void testFullUpdateBookSucceedsWithStatusCode200OKWhenBookExists() throws Exception {
         BookEntity savedBook = TestDataUtils.testBookA(null);
         bookRepository.save(savedBook);
 
@@ -172,6 +172,70 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.isbn").value("978-1-2345-6789-0")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.title").value("The Whispering Shadows")
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update book succeeds with status code 200 OK when book exists")
+    void testPartialUpdateBookSucceedsWithStatusCode200OKWhenBookExists() throws Exception {
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
+
+        BookDto bookDto = BookDto.builder()
+                .isbn(savedBook.getIsbn())
+                .title("How to cook rice")
+                .build();
+        String bookJson = objectMapper.writeValueAsString(bookDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/books/%s", savedBook.getIsbn()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update book fails with status code 404 Not Found when book does not exist")
+    void testPartialUpdateBookFailsWithStatusCode404NotFoundWhenBookDoesNotExist() throws Exception {
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+
+        BookDto bookDto = BookDto.builder()
+                .isbn(savedBook.getIsbn())
+                .title("How to cook rice")
+                .build();
+        String bookJson = objectMapper.writeValueAsString(bookDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update book succeeds and returns the updated book")
+    void testPartialUpdateBookSucceedsAndReturnsTheUpdatedBook() throws Exception {
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
+
+        BookDto bookDto = BookDto.builder()
+                .isbn(savedBook.getIsbn())
+                .title("How to cook rice")
+                .build();
+        String bookJson = objectMapper.writeValueAsString(bookDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/books/%s", savedBook.getIsbn()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.isbn").value(savedBook.getIsbn())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("How to cook rice")
         );
     }
 }

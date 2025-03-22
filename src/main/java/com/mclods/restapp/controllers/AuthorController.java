@@ -33,15 +33,16 @@ public class AuthorController {
     @GetMapping(path = "/authors")
     List<AuthorDto> findAllAuthors() {
         List<AuthorDto> authors = new ArrayList<>();
-        authorService.findAll().forEach((authorEntity) -> authors.add(authorMapper.mapTo(authorEntity)));
+        authorService.findAll().forEach((foundAuthor) ->
+                authors.add(authorMapper.mapTo(foundAuthor)));
         return authors;
     }
 
     @GetMapping(path = "/authors/{id}")
     ResponseEntity<AuthorDto> findAuthor(@PathVariable("id") Integer id) {
         Optional<AuthorEntity> author = authorService.findOne(id);
-        return author.map((authorEntity) -> {
-            AuthorDto authorDto = authorMapper.mapTo(authorEntity);
+        return author.map((foundAuthor) -> {
+            AuthorDto authorDto = authorMapper.mapTo(foundAuthor);
             return new ResponseEntity<>(authorDto, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -55,8 +56,8 @@ public class AuthorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        AuthorEntity savedAuthorEntity = authorService.save(id, authorMapper.mapFrom(authorDto));
-        return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.OK);
+        AuthorEntity updatedAuthor = authorService.save(id, authorMapper.mapFrom(authorDto));
+        return new ResponseEntity<>(authorMapper.mapTo(updatedAuthor), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/authors/{id}")
@@ -68,7 +69,7 @@ public class AuthorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        AuthorEntity savedAuthorEntity = authorService.partialUpdate(id, authorMapper.mapFrom(authorDto));
-        return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.OK);
+        AuthorEntity updatedAuthor = authorService.partialUpdate(id, authorMapper.mapFrom(authorDto));
+        return new ResponseEntity<>(authorMapper.mapTo(updatedAuthor), HttpStatus.OK);
     }
 }
