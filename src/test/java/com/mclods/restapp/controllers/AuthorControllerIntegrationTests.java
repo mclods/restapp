@@ -106,8 +106,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test find one author succeeds with status code 200 Ok")
-    void testFindOneAuthorSucceedsWithStatusCode200Ok() throws Exception {
+    @DisplayName("Test find one author succeeds with status code 200 OK when author exists")
+    void testFindOneAuthorSucceedsWithStatusCode200OKWhenAuthorExists() throws Exception {
         AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
         authorRepository.save(savedAuthor);
 
@@ -120,8 +120,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test find one author fails with status code 404 Not Found")
-    void testFindOneAuthorSucceedsWithStatusCode404NotFound() throws Exception {
+    @DisplayName("Test find one author fails with status code 404 Not Found when author does not exist")
+    void testFindOneAuthorSucceedsWithStatusCode404NotFoundWhenAuthorDoesNotExist() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/999")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -149,8 +149,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test full update author succeeds with status code 200 Ok")
-    void testFullUpdateAuthorSucceedsWithStatusCode200Ok() throws Exception {
+    @DisplayName("Test full update author succeeds with status code 200 OK when author exists")
+    void testFullUpdateAuthorSucceedsWithStatusCode200OKWhenAuthorExists() throws Exception {
         AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
         authorRepository.save(savedAuthor);
 
@@ -167,8 +167,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test full update author fails with status code 404 Not Found")
-    void testFullUpdateAuthorFailsWithStatusCode404NotFound() throws Exception {
+    @DisplayName("Test full update author fails with status code 404 Not Found when author does not exist")
+    void testFullUpdateAuthorFailsWithStatusCode404NotFoundWhenAuthorDoesNotExist() throws Exception {
         AuthorDto authorDto = TestDataUtils.testAuthorDtoA();
         String authorJson = objectMapper.writeValueAsString(authorDto);
 
@@ -204,8 +204,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test partial update author succeeds with status code 200 Ok")
-    void testPartialUpdateAuthorSucceedsWithStatusCode200Ok() throws Exception {
+    @DisplayName("Test partial update author succeeds with status code 200 OK when author exists")
+    void testPartialUpdateAuthorSucceedsWithStatusCode200OKWhenAuthorExists() throws Exception {
         AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
         authorRepository.save(savedAuthor);
 
@@ -225,8 +225,8 @@ public class AuthorControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test partial update author fails with status code 404 Not Found")
-    void testPartialUpdateAuthorFailsWithStatusCode404NotFound() throws Exception {
+    @DisplayName("Test partial update author fails with status code 404 Not Found when author does not exist")
+    void testPartialUpdateAuthorFailsWithStatusCode404NotFoundWhenAuthorDoesNotExist() throws Exception {
         AuthorDto authorDto = AuthorDto.builder()
                 .id(999)
                 .name("Kumar Amit")
