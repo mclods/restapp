@@ -238,4 +238,44 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.title").value("How to cook rice")
         );
     }
+
+    @Test
+    @DisplayName("Test delete book succeeds with status code 204 No Content when book exists")
+    void testDeleteBookSucceedsWithStatusCode204NoContentWhenBookExists() throws Exception{
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(String.format("/books/%s", savedBook.getIsbn()))
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+    }
+
+    @Test
+    @DisplayName("Test delete book fails with status code 404 Not Found when book does not exist")
+    void testDeleteBookFailsWithStatusCode404NotFoundWhenBookDoesNotExist() throws Exception{
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/books/999")
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    @DisplayName("Test delete book succeeds and deletes the book")
+    void testDeleteBookSucceedsAndDeletesTheBook() throws Exception{
+        BookEntity savedBook = TestDataUtils.testBookA(null);
+        bookRepository.save(savedBook);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(String.format("/books/%s", savedBook.getIsbn()))
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(String.format("/books/%s", savedBook.getIsbn()))
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
 }
