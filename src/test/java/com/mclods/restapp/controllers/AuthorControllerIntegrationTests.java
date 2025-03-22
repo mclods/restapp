@@ -266,4 +266,44 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.age").value(44)
         );
     }
+
+    @Test
+    @DisplayName("Test delete author succeeds with status code 204 No Content when author exists")
+    void testDeleteAuthorSucceedsWithStatusCode204NoContentWhenAuthorExists() throws Exception{
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(String.format("/authors/%d", savedAuthor.getId()))
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+    }
+
+    @Test
+    @DisplayName("Test delete author fails with status code 404 Not Found when author does not exist")
+    void testDeleteAuthorFailsWithStatusCode404NotFoundWhenAuthorDoesNotExist() throws Exception{
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/authors/999")
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    @DisplayName("Test delete author succeeds and deletes the author")
+    void testDeleteAuthorSucceedsAndDeletesTheAuthor() throws Exception{
+        AuthorEntity savedAuthor = TestDataUtils.testAuthorA();
+        authorRepository.save(savedAuthor);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(String.format("/authors/%d", savedAuthor.getId()))
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(String.format("/authors/%d", savedAuthor.getId()))
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
 }
