@@ -5,6 +5,7 @@ import com.mclods.restapp.repositories.AuthorRepository;
 import com.mclods.restapp.services.AuthorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,6 +45,13 @@ public class AuthorServiceImpl implements AuthorService {
         List<AuthorEntity> authors = new ArrayList<>();
         authorRepository.findAll().forEach(authors::add);
         return authors;
+    }
+
+    @Override
+    public List<AuthorEntity> findAll(Pageable pageable) {
+        logger.info("findAll authors service with pagination called");
+
+        return authorRepository.findAll(pageable).getContent();
     }
 
     @Override
