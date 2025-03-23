@@ -23,12 +23,15 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorEntity save(AuthorEntity authorEntity) {
         logger.info("save author service called");
+        logger.debug("save with authorEntity: {}", authorEntity);
+
         return authorRepository.save(authorEntity);
     }
 
     @Override
     public AuthorEntity save(Integer id, AuthorEntity authorEntity) {
         logger.info("update author service called");
+        logger.debug("save with id: {}, authorEntity: {}", id, authorEntity);
 
         authorEntity.setId(id);
         return authorRepository.save(authorEntity);
@@ -46,18 +49,23 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Optional<AuthorEntity> findOne(Integer id) {
         logger.info("findOne author service called");
+        logger.debug("findOne with id: {}", id);
+
         return authorRepository.findById(id);
     }
 
     @Override
     public boolean exists(Integer id) {
         logger.info("author exists service called");
+        logger.debug("exists with id: {}", id);
+
         return authorRepository.existsById(id);
     }
 
     @Override
     public AuthorEntity partialUpdate(Integer id, AuthorEntity authorEntity) {
         logger.info("partialUpdate author service called");
+        logger.debug("partialUpdate with id: {}, authorEntity: {}", id, authorEntity);
 
         authorEntity.setId(id);
 
@@ -73,6 +81,8 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(Integer id) {
         logger.info("delete author service called");
+        logger.debug("delete with id: {}", id);
+
         authorRepository.deleteById(id);
     }
 }

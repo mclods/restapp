@@ -23,6 +23,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookEntity save(String isbn, BookEntity bookEntity) {
         logger.info("save book service called");
+        logger.debug("save with isbn: {}, bookEntity: {}", isbn, bookEntity);
 
         bookEntity.setIsbn(isbn);
         return bookRepository.save(bookEntity);
@@ -40,21 +41,25 @@ public class BookServiceImpl implements BookService {
     @Override
     public Optional<BookEntity> findOne(String isbn) {
         logger.info("findOne book service called");
+        logger.debug("findOne with isbn: {}", isbn);
+
         return bookRepository.findById(isbn);
     }
 
     @Override
     public boolean exists(String isbn) {
         logger.info("book exists service called");
+        logger.debug("exists with isbn: {}", isbn);
+
         return bookRepository.existsById(isbn);
     }
 
     @Override
     public BookEntity partialUpdate(String isbn, BookEntity bookEntity) {
         logger.info("partialUpdate book service called");
+        logger.debug("partialUpdate with isbn: {}, bookEntity: {}", isbn, bookEntity);
 
         bookEntity.setIsbn(isbn);
-
         return bookRepository.findById(isbn).map((existingBook) -> {
             logger.info("Requested book found, performing partial update");
 
@@ -66,6 +71,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public void delete(String isbn) {
         logger.info("delete book service called");
+        logger.debug("delete with isbn: {}", isbn);
+
         bookRepository.deleteById(isbn);
     }
 }

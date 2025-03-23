@@ -27,6 +27,7 @@ public class BookController {
     @PutMapping(path = "/books/{isbn}")
     ResponseEntity<BookDto> createUpdateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto) {
         logger.info("createUpdateBook endpoint called");
+        logger.debug("Received isbn: {}, bookDto: {}", isbn, bookDto);
 
         boolean bookExists = bookService.exists(isbn);
         BookEntity savedUpdatedBook = bookService.save(isbn, bookMapper.mapFrom(bookDto));
@@ -53,6 +54,7 @@ public class BookController {
     @GetMapping(path = "/books/{isbn}")
     ResponseEntity<BookDto> findBook(@PathVariable("isbn") String isbn) {
         logger.info("findBook endpoint called");
+        logger.debug("Received isbn: {}", isbn);
 
         return bookService.findOne(isbn).map((foundBook) -> {
             logger.info("Requested book found");
@@ -71,6 +73,7 @@ public class BookController {
             @RequestBody BookDto bookDto
     ) {
       logger.info("partialUpdateBook endpoint called");
+      logger.debug("Received isbn: {}, bookDto: {}", isbn, bookDto);
 
       if(!bookService.exists(isbn)) {
           logger.info("Requested book not found");
@@ -84,6 +87,7 @@ public class BookController {
     @DeleteMapping(path = "/books/{isbn}")
     ResponseEntity<BookDto> deleteBook(@PathVariable("isbn") String isbn) {
         logger.info("deleteBook endpoint called");
+        logger.debug("Received isbn: {}", isbn);
 
         if(!bookService.exists(isbn)) {
             logger.info("Requested book not found");

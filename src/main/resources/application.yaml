@@ -9,3 +9,5 @@ spring:
 logging:
   pattern:
     console: "%c - [%level] - %d - %m%n"
+  level:
+    root: INFO

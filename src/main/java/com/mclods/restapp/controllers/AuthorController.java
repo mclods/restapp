@@ -29,6 +29,7 @@ public class AuthorController {
     @PostMapping(path = "/authors")
     ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         logger.info("createAuthor endpoint called");
+        logger.debug("Received authorDto: {}", authorDto);
 
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
         AuthorEntity savedAuthorEntity = authorService.save(authorEntity);
@@ -48,6 +49,7 @@ public class AuthorController {
     @GetMapping(path = "/authors/{id}")
     ResponseEntity<AuthorDto> findAuthor(@PathVariable("id") Integer id) {
         logger.info("findAuthor endpoint called");
+        logger.debug("Received id: {}", id);
 
         Optional<AuthorEntity> author = authorService.findOne(id);
         return author.map((foundAuthor) -> {
@@ -67,6 +69,7 @@ public class AuthorController {
             @RequestBody AuthorDto authorDto
     ) {
         logger.info("fullUpdateAuthor endpoint called");
+        logger.debug("Received id: {}, authorDto: {}", id, authorDto);
 
         if(!authorService.exists(id)) {
             logger.info("Requested author not found");
@@ -83,6 +86,7 @@ public class AuthorController {
             @RequestBody AuthorDto authorDto
     ) {
         logger.info("partialUpdateAuthor endpoint called");
+        logger.debug("Received id: {}, authorDto: {}", id, authorDto);
 
         if(!authorService.exists(id)) {
             logger.info("Requested author not found");
@@ -96,6 +100,7 @@ public class AuthorController {
     @DeleteMapping(path = "/authors/{id}")
     ResponseEntity<AuthorDto> deleteAuthor(@PathVariable("id") Integer id) {
         logger.info("deleteAuthor endpoint called");
+        logger.debug("Received id: {}", id);
 
         if(!authorService.exists(id)) {
             logger.info("Requested author not found");
