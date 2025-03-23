@@ -5,6 +5,7 @@ import com.mclods.restapp.repositories.BookRepository;
 import com.mclods.restapp.services.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,6 +37,13 @@ public class BookServiceImpl implements BookService {
         List<BookEntity> books = new ArrayList<>();
         bookRepository.findAll().forEach(books::add);
         return books;
+    }
+
+    @Override
+    public List<BookEntity> findAll(Pageable pageable) {
+        logger.info("findAll books service with pagination called");
+
+        return bookRepository.findAll(pageable).getContent();
     }
 
     @Override

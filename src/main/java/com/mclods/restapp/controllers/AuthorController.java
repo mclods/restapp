@@ -6,6 +6,7 @@ import com.mclods.restapp.mappers.Mapper;
 import com.mclods.restapp.services.AuthorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,13 +38,14 @@ public class AuthorController {
     }
 
     @GetMapping(path = "/authors")
-    List<AuthorDto> findAllAuthors() {
+    List<AuthorDto> findAllAuthors(Pageable pageable) {
         logger.info("findAllAuthors endpoint called");
 
-        List<AuthorDto> authors = new ArrayList<>();
-        authorService.findAll().forEach((foundAuthor) ->
-                authors.add(authorMapper.mapTo(foundAuthor)));
-        return authors;
+        List<AuthorDto> foundAuthors = new ArrayList<>();
+        authorService.findAll(pageable)
+                .forEach((author) ->
+                        foundAuthors.add(authorMapper.mapTo(author)));
+        return foundAuthors;
     }
 
     @GetMapping(path = "/authors/{id}")

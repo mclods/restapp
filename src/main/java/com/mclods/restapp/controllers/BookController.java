@@ -6,12 +6,14 @@ import com.mclods.restapp.mappers.Mapper;
 import com.mclods.restapp.services.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class BookController {
@@ -42,13 +44,14 @@ public class BookController {
     }
 
     @GetMapping(path = "/books")
-    List<BookDto> findAllBooks() {
+    List<BookDto> findAllBooks(Pageable pageable) {
         logger.info("findAllBooks endpoint called");
 
-        List<BookDto> books = new ArrayList<>();
-        bookService.findAll().forEach((foundBook) ->
-                books.add(bookMapper.mapTo(foundBook)));
-        return books;
+        List<BookDto> foundBooks = new ArrayList<>();
+        bookService.findAll(pageable)
+                .forEach((book) ->
+                        foundBooks.add(bookMapper.mapTo(book)));
+        return foundBooks;
     }
 
     @GetMapping(path = "/books/{isbn}")
@@ -56,7 +59,8 @@ public class BookController {
         logger.info("findBook endpoint called");
         logger.debug("Received isbn: {}", isbn);
 
-        return bookService.findOne(isbn).map((foundBook) -> {
+        Optional<BookEntity> book = bookService.findOne(isbn);
+        return book.map((foundBook) -> {
             logger.info("Requested book found");
 
             BookDto bookDto = bookMapper.mapTo(foundBook);
